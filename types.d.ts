@@ -12,3 +12,10 @@ export interface IRecipe {
   word_count: number;
   chat_response: string;
 }
+
+export interface IRecipes {
+  [key: string]: IRecipe;
+}
+export interface ILocalStorageData {
+  recipes: IRecipes;
+}
