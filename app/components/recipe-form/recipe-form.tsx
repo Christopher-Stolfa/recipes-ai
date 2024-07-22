@@ -1,6 +1,6 @@
 "use client";
 import { OPEN_AI } from "@/app/constants/endpoints";
-import { IRecipe } from "@/types";
+import { ILocalStorageData, IRecipe, IRecipes } from "@/types";
 import { useChat } from "ai/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -51,13 +51,15 @@ const RecipeForm: React.FC = () => {
       try {
         const responseJson: IRecipe = await response.clone().json();
         const id = uuidv4();
-        localStorage.setItem(id, JSON.stringify(responseJson));
-        const storedData = localStorage.getItem(id);
+        let recipes: IRecipes = {};
+        const storedData = localStorage.getItem("culinaryai");
         if (storedData) {
-          router.push(`/recipe/${id}`);
-        } else {
-          console.error("Failed to store the recipe data.");
+          const storageData: ILocalStorageData = JSON.parse(storedData);
+          recipes = storageData?.recipes ?? {};
         }
+        recipes[id] = responseJson;
+        localStorage.setItem("culinaryai", JSON.stringify({ recipes }));
+        router.push(`/recipe/${id}`);
       } catch (error) {
         console.error(error);
       } finally {

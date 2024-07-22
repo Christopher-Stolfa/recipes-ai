@@ -16,9 +16,15 @@ const Recipe = ({ params: { id } }: IRecipeProps) => {
 
   useEffect(() => {
     if (id) {
-      const storedRecipe = localStorage.getItem(id as string);
-      if (storedRecipe) {
-        setRecipe(JSON.parse(storedRecipe) as IRecipe);
+      const storedData = localStorage.getItem("culinaryai");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        const recipeData = parsedData.recipes[id];
+        if (recipeData) {
+          setRecipe(recipeData);
+        } else {
+          router.replace("/404");
+        }
       } else {
         router.replace("/404");
       }
