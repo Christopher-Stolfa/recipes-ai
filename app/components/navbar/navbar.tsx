@@ -2,6 +2,7 @@
 import React from "react";
 import { useSidebar } from "@/app/hooks/use-sidebar";
 import styles from "./Navbar.module.scss";
+import Link from "next/link";
 
 const Navbar: React.FC = () => {
   const { toggle } = useSidebar();
@@ -11,7 +12,9 @@ const Navbar: React.FC = () => {
       <button className={styles.menuButton} onClick={toggle}>
         ☰
       </button>
-      <div className={styles.title}>Culinary AI</div>
+      <Link className={styles.title} href="/">
+        Culinary AI
+      </Link>
     </div>
   );
 };
