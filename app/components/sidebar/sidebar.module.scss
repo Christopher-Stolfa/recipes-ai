@@ -25,7 +25,10 @@
 .menuItem {
   padding: 15px 20px;
   cursor: pointer;
-
+  a {
+    height: 100%;
+    width: 100%;
+  }
   &:hover {
     background-color: #007f61;
   }
