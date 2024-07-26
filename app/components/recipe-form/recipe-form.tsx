@@ -6,21 +6,46 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm, Resolver, SubmitHandler, Controller } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { Select, Button } from "antd";
+import { Select, Button, Slider, Checkbox } from "antd";
 import { getNames, registerLocale } from "i18n-iso-countries";
 import countryLocale from "i18n-iso-countries/langs/en.json";
+import TextArea from "antd/es/input/TextArea";
 registerLocale(countryLocale);
+
+enum EMealType {
+  breakfast = "breakfast",
+  brunch = "brunch",
+  lunch = "lunch",
+  dinner = "dinner",
+}
+
+type IFormValues = {
+  countries: typeof countryArray;
+  description: string;
+  difficulty: number;
+  cookingTime: number;
+  [EMealType.breakfast]: boolean;
+  [EMealType.brunch]: boolean;
+  [EMealType.lunch]: boolean;
+  [EMealType.dinner]: boolean;
+};
+
 const countryList = getNames("en", {
   select: "official",
 });
+
 const countryArray = Object.keys(countryList).map((isoCode) => ({
   label: countryList[isoCode],
   value: countryList[isoCode],
   isoCode,
 }));
-type IFormValues = {
-  countries: typeof countryArray;
-};
+
+const mealTypeOptions: { label: string; value: EMealType }[] = [
+  { label: "Breakfast", value: EMealType.breakfast },
+  { label: "Brunch", value: EMealType.brunch },
+  { label: "Lunch", value: EMealType.lunch },
+  { label: "Dinner", value: EMealType.dinner },
+];
 
 const resolver: Resolver<IFormValues> = async (values) => {
   return {
@@ -37,8 +62,17 @@ const resolver: Resolver<IFormValues> = async (values) => {
 };
 
 const RecipeForm: React.FC = () => {
-  const { control, handleSubmit, formState, watch } = useForm<IFormValues>({
+  const { control, handleSubmit, setValue, watch } = useForm<IFormValues>({
     resolver,
+    defaultValues: {
+      countries: [],
+      description: "",
+      difficulty: 3,
+      breakfast: false,
+      brunch: false,
+      lunch: true,
+      dinner: true,
+    },
   });
   const router = useRouter();
   const {
@@ -76,17 +110,65 @@ const RecipeForm: React.FC = () => {
   });
 
   useEffect(() => {
-    watch(({ countries }) => {
-      setInput(
-        `The recipe must be relevant to the following params:
-        countries=${countries?.join(", ")}
+    watch(
+      ({
+        countries,
+        description,
+        difficulty,
+        cookingTime,
+        breakfast,
+        brunch,
+        lunch,
+        dinner,
+      }) => {
+        setInput(
+          `The recipe must be relevant to the following params:
+        description=${description}.
+        countries=${countries?.join(", ")}.
+        The difficulty of the recipe is a range between 1 and 10, 1 being the easiest and 10 being the hardest.
+        difficulty=${difficulty}.
+        cookingTime=${cookingTime} minutes.
+        breakfast=${breakfast}.
+        brunch=${brunch}.
+        lunch=${lunch}.
+        dinner=${dinner}.
         `
-      );
-    });
+        );
+      }
+    );
   }, [watch, setInput]);
 
   return (
     <form onSubmit={onSubmit}>
+      <Controller
+        name="description"
+        control={control}
+        render={({ field }) => (
+          <TextArea
+            {...field}
+            rows={2}
+            placeholder="Special instructions for your recipe..."
+          />
+        )}
+      />
+      <div>
+        {mealTypeOptions.map((option) => (
+          <Controller
+            key={option.value}
+            name={option.value}
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                {...field}
+                checked={field.value}
+                onChange={(e) => setValue(option.value, e.target.checked)}
+              >
+                {option.label}
+              </Checkbox>
+            )}
+          />
+        ))}
+      </div>
       <Controller
         name="countries"
         control={control}
@@ -101,6 +183,32 @@ const RecipeForm: React.FC = () => {
             }}
             placeholder="Please select"
             options={countryArray}
+          />
+        )}
+      />
+      <Controller
+        name="difficulty"
+        control={control}
+        render={({ field }) => <Slider {...field} min={1} max={10} />}
+      />
+      <Controller
+        name="cookingTime"
+        control={control}
+        render={({ field }) => (
+          <Slider
+            {...field}
+            marks={{
+              5: "5",
+              15: "15",
+              30: "30",
+              45: "45",
+              60: "60",
+            }}
+            min={5}
+            max={120}
+            step={5}
+            defaultValue={30}
+            tooltip={{ formatter: (value) => `${value} min` }}
           />
         )}
       />
