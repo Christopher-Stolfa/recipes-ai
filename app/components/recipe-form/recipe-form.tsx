@@ -189,7 +189,25 @@ const RecipeForm: React.FC = () => {
       <Controller
         name="difficulty"
         control={control}
-        render={({ field }) => <Slider {...field} min={1} max={10} />}
+        render={({ field }) => (
+          <Slider
+            {...field}
+            marks={{
+              1: 1,
+              2: 2,
+              3: 3,
+              4: 4,
+              5: 5,
+              6: 6,
+              7: 7,
+              8: 8,
+              9: 9,
+              10: 10,
+            }}
+            min={1}
+            max={10}
+          />
+        )}
       />
       <Controller
         name="cookingTime"
@@ -198,11 +216,15 @@ const RecipeForm: React.FC = () => {
           <Slider
             {...field}
             marks={{
-              5: "5",
-              15: "15",
-              30: "30",
-              45: "45",
-              60: "60",
+              5: 5,
+              15: 15,
+              30: 30,
+              45: 45,
+              60: 60,
+              75: 75,
+              90: 90,
+              105: 105,
+              120: 120,
             }}
             min={5}
             max={120}
