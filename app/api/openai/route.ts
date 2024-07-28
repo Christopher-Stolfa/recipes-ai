@@ -4,27 +4,17 @@ import { z } from "zod";
 
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { generateObject } from "ai";
-import { openai } from "@ai-sdk/openai";
 
 export const runtime = "edge";
 
-// const TEMPLATE = `Extract the requested fields from the input.
-
-// The field "entity" refers to the first mentioned entity in the input.
-
-// Input:
-
-// {input}`;
-
 const TEMPLATE = `
-You are a recipe generator that only comes up with the best most accurate recipes possible, please generate a recipe relevant to the type of cuisine described in the Input: {input}.
-The title of the recipe should be concise.
+You are a recipe generator that outputs only the best most accurate recipes possible, please generate a recipe relevant to the type of cuisine described in the Input: {input}.
+The title of the recipe should be accurate and concise. If the recipe has an established name, please use that name and try not to invent new ones.
+For the description, do not output the exact example from the previous sentence.
 Provide a time estimate of the step.
 List the steps in an order that makes sense for the recipe.
-When listing ingredients, please provide the the measurements.
-Each step should should contain easy to read concise instructions that mentions time and measurements.
-, 
+When listing ingredients, please provide the measurements.
+Each step should contain easy to read concise instructions that mentions time and measurements.
 `;
 
 /**
@@ -56,6 +46,11 @@ export async function POST(req: NextRequest) {
     const schema = z
       .object({
         title: z.string().describe("The title of a recipe"),
+        description: z
+          .string()
+          .describe(
+            "A small blurb or description about the recipe containing any information that may be useful or interesting."
+          ),
         ingredients: z
           .array(z.string().describe("An ingredient"))
           .describe("The list of the ingredients used in all the steps"),
