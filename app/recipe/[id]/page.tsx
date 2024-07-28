@@ -1,8 +1,15 @@
 "use client";
-import Chatbox from "@/app/components/chatbox/chatbox";
 import { IRecipe } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Hedvig_Letters_Serif } from "next/font/google";
+import styles from "./page.module.scss";
+import { Divider } from "antd";
+
+export const hedvigLettersSerif = Hedvig_Letters_Serif({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 interface IRecipeProps {
   params: {
@@ -36,21 +43,29 @@ const Recipe = ({ params: { id } }: IRecipeProps) => {
   }
 
   return (
-    <main>
-      <h1>{recipe?.title}</h1>
-      <div>
+    <article className={`${hedvigLettersSerif.className} ${styles.container}`}>
+      <section>
+        <h1>{recipe?.title}</h1>
+        <p className={styles.description}>{recipe?.description}</p>
+      </section>
+      <section>
         <h2>Ingredients</h2>
+        <Divider className={styles.divider} />
         <ul>
           {recipe?.ingredients?.map((ingredient) => (
             <li key={ingredient}>{ingredient}</li>
           ))}
         </ul>
-      </div>
-      <div>
+      </section>
+      <section>
+        <h2>Preperation</h2>
+        <Divider className={styles.divider} />
         <ul>
           {recipe?.steps?.map((stepData) => (
             <li key={`${recipe?.title}-step-${stepData?.step}`}>
-              <h2>{stepData?.title}</h2>
+              <h3>
+                Step {stepData?.step} - {stepData?.title}
+              </h3>
               <small>Time: {stepData?.time}</small>
               <ul>
                 {stepData?.instructions?.map((instruction, i) => (
@@ -62,8 +77,8 @@ const Recipe = ({ params: { id } }: IRecipeProps) => {
             </li>
           ))}
         </ul>
-      </div>
-    </main>
+      </section>
+    </article>
   );
 };
 
