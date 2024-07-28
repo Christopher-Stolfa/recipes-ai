@@ -17,10 +17,12 @@ const Sidebar: React.FC = () => {
     const storedData = localStorage.getItem("culinaryai");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
-      const newPaths = Object.keys(parsedData.recipes).map((key) => ({
-        path: `/recipe/${key}`,
-        title: parsedData.recipes[key].title,
-      }));
+      const newPaths = Object.keys(parsedData.recipes)
+        .reverse()
+        .map((key) => ({
+          path: `/recipe/${key}`,
+          title: parsedData.recipes[key].title,
+        }));
       setRecipePaths(newPaths);
     }
   };
