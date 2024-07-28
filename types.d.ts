@@ -7,6 +7,7 @@ type RecipeStep = {
 
 export interface IRecipe {
   title: string;
+  description: string;
   ingredients: string[];
   steps: RecipeStep[];
   word_count: number;
