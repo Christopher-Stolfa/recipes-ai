@@ -10,6 +10,7 @@ import { Select, Button, Slider, Checkbox } from "antd";
 import { getNames, registerLocale } from "i18n-iso-countries";
 import countryLocale from "i18n-iso-countries/langs/en.json";
 import TextArea from "antd/es/input/TextArea";
+import styles from "./recipe-form.module.scss";
 registerLocale(countryLocale);
 
 enum EMealType {
@@ -21,9 +22,9 @@ enum EMealType {
 
 type IFormValues = {
   countries: typeof countryArray;
-  description: string;
+  additionalDetails: string;
   difficulty: number;
-  cookingTime: number;
+  prepTime: number;
   [EMealType.breakfast]: boolean;
   [EMealType.brunch]: boolean;
   [EMealType.lunch]: boolean;
@@ -66,7 +67,7 @@ const RecipeForm: React.FC = () => {
     resolver,
     defaultValues: {
       countries: [],
-      description: "",
+      additionalDetails: "",
       difficulty: 3,
       breakfast: false,
       brunch: false,
@@ -113,9 +114,9 @@ const RecipeForm: React.FC = () => {
     watch(
       ({
         countries,
-        description,
+        additionalDetails,
         difficulty,
-        cookingTime,
+        prepTime,
         breakfast,
         brunch,
         lunch,
@@ -123,11 +124,12 @@ const RecipeForm: React.FC = () => {
       }) => {
         setInput(
           `The recipe must be relevant to the following params:
-        description=${description}.
+        additionalDetails=${additionalDetails}.
         countries=${countries?.join(", ")}.
         The difficulty of the recipe is a range between 1 and 10, 1 being the easiest and 10 being the hardest.
         difficulty=${difficulty}.
-        cookingTime=${cookingTime} minutes.
+        prepTime=${prepTime} minutes.
+        The recipe should be breakfast, brunch, lunch, or dinner if their values are true.
         breakfast=${breakfast}.
         brunch=${brunch}.
         lunch=${lunch}.
@@ -139,9 +141,9 @@ const RecipeForm: React.FC = () => {
   }, [watch, setInput]);
 
   return (
-    <form onSubmit={onSubmit}>
+    <form className={styles.container} onSubmit={onSubmit}>
       <Controller
-        name="description"
+        name="additionalDetails"
         control={control}
         render={({ field }) => (
           <TextArea
@@ -210,7 +212,7 @@ const RecipeForm: React.FC = () => {
         )}
       />
       <Controller
-        name="cookingTime"
+        name="prepTime"
         control={control}
         render={({ field }) => (
           <Slider
