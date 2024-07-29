@@ -67,7 +67,7 @@ const Recipe = ({ params: { id } }: IRecipeProps) => {
         </ul>
       </section>
       <section>
-        <h2>Preperation</h2>
+        <h2>Preparation</h2>
         <Divider className={styles.divider} />
         <ul>
           {recipe?.steps?.map((stepData) => (
