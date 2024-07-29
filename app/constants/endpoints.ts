@@ -1,1 +1,1 @@
-export const OPEN_AI = "/api/openai";
+export const GENERATE_RECIPE = "/api/generate-recipe";

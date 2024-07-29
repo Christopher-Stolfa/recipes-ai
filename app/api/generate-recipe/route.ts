@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-
 import { z } from "zod";
-
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
+import OpenAI from "openai";
 
 export const runtime = "edge";
 
 const TEMPLATE = `
 You are a recipe generator that outputs only the best most accurate recipes possible, please generate a recipe relevant to the type of cuisine described in the Input: {input}.
 The title of the recipe should be accurate and concise. If the recipe has an established name, please use that name and try not to invent new ones.
-For the description, do not output the exact example from the previous sentence.
+The recipe description should describe the dish and provide a historical fact about its origins, all within two sentences.
+The recipe description should be interesting and not sound vague or AI generated.
 Provide a time estimate of the step.
 List the steps in an order that makes sense for the recipe.
 When listing ingredients, please provide the measurements.
@@ -38,7 +38,9 @@ export async function POST(req: NextRequest) {
       model: "gpt-3.5-turbo-0125",
       openAIApiKey: process.env.OPENAI_API_KEY,
     });
-
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
     /**
      * We use Zod (https://zod.dev) to define our schema for convenience,
      * but you can pass JSON schema if desired.
@@ -46,11 +48,7 @@ export async function POST(req: NextRequest) {
     const schema = z
       .object({
         title: z.string().describe("The title of a recipe"),
-        description: z
-          .string()
-          .describe(
-            "A small blurb or description about the recipe containing any information that may be useful or interesting."
-          ),
+        description: z.string().describe("A description of the recipe"),
         ingredients: z
           .array(z.string().describe("An ingredient"))
           .describe("The list of the ingredients used in all the steps"),
@@ -68,8 +66,8 @@ export async function POST(req: NextRequest) {
             })
           )
           .describe("A list of steps of the recipe"),
-        word_count: z.number().describe("The number of words in the input"),
-        chat_response: z.string().describe("A response to the human's input"),
+        wordCount: z.number().describe("The number of words in the input"),
+        chatResponse: z.string().describe("A response to the human's input"),
       })
       .describe("Should always be used to properly format output");
 
@@ -91,8 +89,14 @@ export async function POST(req: NextRequest) {
     const result = await chain.invoke({
       input: currentMessageContent,
     });
-
-    return NextResponse.json(result, { status: 200 });
+    const image = await openai.images.generate({
+      model: "dall-e-3",
+      prompt: `A realistic image of: ${result?.description}`,
+      n: 1,
+    });
+    const imageUrl = image?.data?.[0]?.url ?? "";
+    const recipeResult = { ...result, imageUrl };
+    return NextResponse.json(recipeResult, { status: 200 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
   }
