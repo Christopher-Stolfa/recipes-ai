@@ -10,8 +10,9 @@ export interface IRecipe {
   description: string;
   ingredients: string[];
   steps: RecipeStep[];
-  word_count: number;
-  chat_response: string;
+  wordCount: number;
+  chatResponse: string;
+  imageUrl: string;
 }
 
 export interface IRecipes {
