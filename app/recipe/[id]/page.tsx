@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Hedvig_Letters_Serif } from "next/font/google";
 import styles from "./page.module.scss";
-import { Divider } from "antd";
+import { Divider, Image } from "antd";
 
 export const hedvigLettersSerif = Hedvig_Letters_Serif({
   subsets: ["latin"],
@@ -44,9 +44,18 @@ const Recipe = ({ params: { id } }: IRecipeProps) => {
 
   return (
     <article className={`${hedvigLettersSerif.className} ${styles.container}`}>
-      <section>
-        <h1>{recipe?.title}</h1>
-        <p className={styles.description}>{recipe?.description}</p>
+      <section className={styles.header}>
+        <div className={styles.headerLeft}>
+          <h1>{recipe?.title}</h1>
+          <p className={styles.description}>{recipe?.description}</p>
+        </div>
+        <div className={styles.headerRight}>
+          <Image
+            className={styles.image}
+            alt={recipe?.title}
+            src={recipe?.imageUrl}
+          />
+        </div>
       </section>
       <section>
         <h2>Ingredients</h2>
