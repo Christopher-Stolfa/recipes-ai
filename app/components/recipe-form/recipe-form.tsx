@@ -1,5 +1,5 @@
 "use client";
-import { OPEN_AI } from "@/app/constants/endpoints";
+import { GENERATE_RECIPE } from "@/app/constants/endpoints";
 import { ILocalStorageData, IRecipe, IRecipes } from "@/types";
 import { useChat } from "ai/react";
 import { useRouter } from "next/navigation";
@@ -81,7 +81,7 @@ const RecipeForm: React.FC = () => {
     handleSubmit: handleApiSubmit,
     isLoading: chatEndpointIsLoading,
   } = useChat({
-    api: OPEN_AI,
+    api: GENERATE_RECIPE,
     async onResponse(response) {
       try {
         const responseJson: IRecipe = await response.clone().json();
@@ -142,107 +142,109 @@ const RecipeForm: React.FC = () => {
 
   return (
     <form className={styles.container} onSubmit={onSubmit}>
-      <Controller
-        name="additionalDetails"
-        control={control}
-        render={({ field }) => (
-          <TextArea
-            {...field}
-            rows={2}
-            placeholder="Special instructions for your recipe..."
-          />
-        )}
-      />
       <div>
-        {mealTypeOptions.map((option) => (
-          <Controller
-            key={option.value}
-            name={option.value}
-            control={control}
-            render={({ field }) => (
-              <Checkbox
-                {...field}
-                checked={field.value}
-                onChange={(e) => setValue(option.value, e.target.checked)}
-              >
-                {option.label}
-              </Checkbox>
-            )}
-          />
-        ))}
+        <Controller
+          name="additionalDetails"
+          control={control}
+          render={({ field }) => (
+            <TextArea
+              {...field}
+              rows={2}
+              placeholder="Special instructions for your recipe..."
+            />
+          )}
+        />
+        <div>
+          {mealTypeOptions.map((option) => (
+            <Controller
+              key={option.value}
+              name={option.value}
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  {...field}
+                  checked={field.value}
+                  onChange={(e) => setValue(option.value, e.target.checked)}
+                >
+                  {option.label}
+                </Checkbox>
+              )}
+            />
+          ))}
+        </div>
+        <Controller
+          name="countries"
+          control={control}
+          render={({ field }) => (
+            <Select
+              {...field}
+              disabled={chatEndpointIsLoading}
+              mode="multiple"
+              allowClear
+              style={{
+                width: "100%",
+              }}
+              placeholder="Please select"
+              options={countryArray}
+            />
+          )}
+        />
+        <Controller
+          name="difficulty"
+          control={control}
+          render={({ field }) => (
+            <Slider
+              {...field}
+              marks={{
+                1: 1,
+                2: 2,
+                3: 3,
+                4: 4,
+                5: 5,
+                6: 6,
+                7: 7,
+                8: 8,
+                9: 9,
+                10: 10,
+              }}
+              min={1}
+              max={10}
+            />
+          )}
+        />
+        <Controller
+          name="prepTime"
+          control={control}
+          render={({ field }) => (
+            <Slider
+              {...field}
+              marks={{
+                5: 5,
+                15: 15,
+                30: 30,
+                45: 45,
+                60: 60,
+                75: 75,
+                90: 90,
+                105: 105,
+                120: 120,
+              }}
+              min={5}
+              max={120}
+              step={5}
+              defaultValue={30}
+              tooltip={{ formatter: (value) => `${value} min` }}
+            />
+          )}
+        />
+        <Button
+          disabled={chatEndpointIsLoading}
+          loading={chatEndpointIsLoading}
+          htmlType="submit"
+        >
+          Submit
+        </Button>
       </div>
-      <Controller
-        name="countries"
-        control={control}
-        render={({ field }) => (
-          <Select
-            {...field}
-            disabled={chatEndpointIsLoading}
-            mode="multiple"
-            allowClear
-            style={{
-              width: "100%",
-            }}
-            placeholder="Please select"
-            options={countryArray}
-          />
-        )}
-      />
-      <Controller
-        name="difficulty"
-        control={control}
-        render={({ field }) => (
-          <Slider
-            {...field}
-            marks={{
-              1: 1,
-              2: 2,
-              3: 3,
-              4: 4,
-              5: 5,
-              6: 6,
-              7: 7,
-              8: 8,
-              9: 9,
-              10: 10,
-            }}
-            min={1}
-            max={10}
-          />
-        )}
-      />
-      <Controller
-        name="prepTime"
-        control={control}
-        render={({ field }) => (
-          <Slider
-            {...field}
-            marks={{
-              5: 5,
-              15: 15,
-              30: 30,
-              45: 45,
-              60: 60,
-              75: 75,
-              90: 90,
-              105: 105,
-              120: 120,
-            }}
-            min={5}
-            max={120}
-            step={5}
-            defaultValue={30}
-            tooltip={{ formatter: (value) => `${value} min` }}
-          />
-        )}
-      />
-      <Button
-        disabled={chatEndpointIsLoading}
-        loading={chatEndpointIsLoading}
-        htmlType="submit"
-      >
-        Submit
-      </Button>
     </form>
   );
 };
