@@ -1,7 +1,7 @@
 .sidebar {
   width: 0;
   height: calc(100vh - 60px);
-  background-color: #00a67e;
+  background-color: #6b8a7a;
   color: white;
   transition: width 0.3s ease;
   display: flex;
@@ -34,7 +34,7 @@
     width: 100%;
   }
   &:hover {
-    background-color: #007f61;
+    background-color: #254336;
   }
 }
 
