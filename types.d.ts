@@ -8,6 +8,8 @@ type RecipeStep = {
 export interface IRecipe {
   title: string;
   description: string;
+  servings: number;
+  time: number;
   ingredients: string[];
   steps: RecipeStep[];
   wordCount: number;

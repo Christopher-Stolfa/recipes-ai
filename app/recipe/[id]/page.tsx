@@ -47,6 +47,10 @@ const Recipe = ({ params: { id } }: IRecipeProps) => {
       <section className={styles.header}>
         <div className={styles.headerLeft}>
           <h1>{recipe?.title}</h1>
+          <p className={styles.servingSizeTime}>Servings: {recipe?.servings}</p>
+          <p className={styles.servingSizeTime}>
+            Cooking time: {recipe?.time} minutes
+          </p>
           <p className={styles.description}>{recipe?.description}</p>
         </div>
         <div className={styles.headerRight}>

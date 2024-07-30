@@ -14,6 +14,7 @@ The recipe description should be interesting and not sound vague or AI generated
 Provide a time estimate of the step.
 List the steps in an order that makes sense for the recipe.
 When listing ingredients, please provide the measurements.
+The amount of ingredients should reflect the number of servings.
 Each step should contain easy to read concise instructions that mentions time and measurements.
 `;
 
@@ -49,6 +50,8 @@ export async function POST(req: NextRequest) {
       .object({
         title: z.string().describe("The title of a recipe"),
         description: z.string().describe("A description of the recipe"),
+        time: z.number().describe("The total recipe time in minutes"),
+        servings: z.number().describe("The number of servings"),
         ingredients: z
           .array(z.string().describe("An ingredient"))
           .describe("The list of the ingredients used in all the steps"),

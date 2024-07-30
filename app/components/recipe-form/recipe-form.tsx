@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm, Resolver, SubmitHandler, Controller } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { Select, Button, Slider, Checkbox } from "antd";
+import { Select, Button, Slider, Checkbox, Input } from "antd";
 import { getNames, registerLocale } from "i18n-iso-countries";
 import countryLocale from "i18n-iso-countries/langs/en.json";
 import TextArea from "antd/es/input/TextArea";
@@ -25,6 +25,7 @@ type IFormValues = {
   additionalDetails: string;
   difficulty: number;
   prepTime: number;
+  servings: number;
   [EMealType.breakfast]: boolean;
   [EMealType.brunch]: boolean;
   [EMealType.lunch]: boolean;
@@ -69,6 +70,7 @@ const RecipeForm: React.FC = () => {
       countries: [],
       additionalDetails: "",
       difficulty: 3,
+      servings: 2,
       breakfast: false,
       brunch: false,
       lunch: true,
@@ -121,6 +123,7 @@ const RecipeForm: React.FC = () => {
         brunch,
         lunch,
         dinner,
+        servings,
       }) => {
         setInput(
           `The recipe must be relevant to the following params:
@@ -134,6 +137,7 @@ const RecipeForm: React.FC = () => {
         brunch=${brunch}.
         lunch=${lunch}.
         dinner=${dinner}.
+        numberOfServings=${servings}
         `
         );
       }
@@ -142,7 +146,116 @@ const RecipeForm: React.FC = () => {
 
   return (
     <form className={styles.container} onSubmit={onSubmit}>
-      <div>
+      <div className={styles.content}>
+        <div>
+          <label>Select the type of meal</label>
+          <div>
+            {mealTypeOptions.map((option) => (
+              <Controller
+                key={option.value}
+                name={option.value}
+                control={control}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    checked={field.value}
+                    onChange={(e) => setValue(option.value, e.target.checked)}
+                  >
+                    {option.label}
+                  </Checkbox>
+                )}
+              />
+            ))}
+          </div>
+        </div>
+        <div>
+          <label htmlFor="servings">Number of servings</label>
+          <Controller
+            name="servings"
+            control={control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                width={16}
+                placeholder="Any special instructions or additional details for your recipe..."
+              />
+            )}
+          />
+        </div>
+        <Controller
+          name="countries"
+          control={control}
+          render={({ field }) => (
+            <div>
+              <label htmlFor="countries">Countries of influence</label>
+              <Select
+                {...field}
+                disabled={chatEndpointIsLoading}
+                mode="multiple"
+                allowClear
+                style={{
+                  width: "100%",
+                }}
+                placeholder="Please select"
+                options={countryArray}
+              />
+            </div>
+          )}
+        />
+        <Controller
+          name="difficulty"
+          control={control}
+          render={({ field }) => (
+            <div>
+              <label htmlFor="difficulty">Recipe difficulty</label>
+              <Slider
+                {...field}
+                marks={{
+                  1: 1,
+                  2: 2,
+                  3: 3,
+                  4: 4,
+                  5: 5,
+                  6: 6,
+                  7: 7,
+                  8: 8,
+                  9: 9,
+                  10: 10,
+                }}
+                min={1}
+                max={10}
+              />
+            </div>
+          )}
+        />
+        <Controller
+          name="prepTime"
+          control={control}
+          render={({ field }) => (
+            <div>
+              <label htmlFor="prepTime">Total cooking time</label>
+              <Slider
+                {...field}
+                marks={{
+                  5: 5,
+                  15: 15,
+                  30: 30,
+                  45: 45,
+                  60: 60,
+                  75: 75,
+                  90: 90,
+                  105: 105,
+                  120: 120,
+                }}
+                min={5}
+                max={120}
+                step={5}
+                defaultValue={30}
+                tooltip={{ formatter: (value) => `${value} min` }}
+              />
+            </div>
+          )}
+        />
         <Controller
           name="additionalDetails"
           control={control}
@@ -150,90 +263,7 @@ const RecipeForm: React.FC = () => {
             <TextArea
               {...field}
               rows={2}
-              placeholder="Special instructions for your recipe..."
-            />
-          )}
-        />
-        <div>
-          {mealTypeOptions.map((option) => (
-            <Controller
-              key={option.value}
-              name={option.value}
-              control={control}
-              render={({ field }) => (
-                <Checkbox
-                  {...field}
-                  checked={field.value}
-                  onChange={(e) => setValue(option.value, e.target.checked)}
-                >
-                  {option.label}
-                </Checkbox>
-              )}
-            />
-          ))}
-        </div>
-        <Controller
-          name="countries"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              disabled={chatEndpointIsLoading}
-              mode="multiple"
-              allowClear
-              style={{
-                width: "100%",
-              }}
-              placeholder="Please select"
-              options={countryArray}
-            />
-          )}
-        />
-        <Controller
-          name="difficulty"
-          control={control}
-          render={({ field }) => (
-            <Slider
-              {...field}
-              marks={{
-                1: 1,
-                2: 2,
-                3: 3,
-                4: 4,
-                5: 5,
-                6: 6,
-                7: 7,
-                8: 8,
-                9: 9,
-                10: 10,
-              }}
-              min={1}
-              max={10}
-            />
-          )}
-        />
-        <Controller
-          name="prepTime"
-          control={control}
-          render={({ field }) => (
-            <Slider
-              {...field}
-              marks={{
-                5: 5,
-                15: 15,
-                30: 30,
-                45: 45,
-                60: 60,
-                75: 75,
-                90: 90,
-                105: 105,
-                120: 120,
-              }}
-              min={5}
-              max={120}
-              step={5}
-              defaultValue={30}
-              tooltip={{ formatter: (value) => `${value} min` }}
+              placeholder="Any special instructions such as dietary restrictions or additional details for your recipe..."
             />
           )}
         />
