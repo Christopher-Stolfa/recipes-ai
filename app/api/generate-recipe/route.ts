@@ -92,14 +92,14 @@ export async function POST(req: NextRequest) {
     const result = await chain.invoke({
       input: currentMessageContent,
     });
-    const image = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: `A realistic image of: ${result?.description}`,
-      n: 1,
-    });
-    const imageUrl = image?.data?.[0]?.url ?? "";
-    const recipeResult = { ...result, imageUrl };
-    return NextResponse.json(recipeResult, { status: 200 });
+    // const image = await openai.images.generate({
+    //   model: "dall-e-3",
+    //   prompt: `A realistic image of: ${result?.description}`,
+    //   n: 1,
+    // });
+    // const imageUrl = image?.data?.[0]?.url ?? "";
+    // const recipeResult = { ...result, imageUrl };
+    return NextResponse.json(result, { status: 200 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
   }
