@@ -1,0 +1,42 @@
+.container {
+  margin: 0 15%;
+  padding: 0 2rem;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  gap: 5%;
+  width: 100%;
+  position: relative;
+}
+
+.servingSizeTime {
+  padding-left: 0.25rem;
+}
+
+.headerLeft {
+  flex-basis: 60%;
+}
+
+.headerRight {
+  flex-basis: 40%;
+}
+
+.description {
+  padding-top: 2rem;
+  padding-left: 0.25rem;
+  line-height: 2.5;
+}
+
+.divider {
+  margin: 1rem 0;
+}
+
+.image {
+  // max-width: 16rem;
+  max-width: 32rem;
+  min-width: 16rem;
+}

@@ -1,0 +1,10 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 60px);
+}
+
+.main {
+  flex-grow: 1;
+  overflow: auto;
+}

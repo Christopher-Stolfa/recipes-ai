@@ -1,0 +1,47 @@
+.sidebar {
+  width: 0;
+  height: calc(100vh - 60px);
+  background-color: #6b8a7a;
+  color: white;
+  transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  overflow: auto;
+  letter-spacing: 0;
+}
+
+.menuContent {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.menuList {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  li {
+    margin: 0;
+  }
+}
+
+.menuItem {
+  padding: 15px 20px;
+  cursor: pointer;
+  a {
+    height: 100%;
+    width: 100%;
+  }
+  &:hover {
+    background-color: #254336;
+  }
+}
+
+.open {
+  min-width: 250px;
+}
+
+.closed {
+  width: 0;
+}
