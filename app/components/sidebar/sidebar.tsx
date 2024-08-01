@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useSidebar } from "@/app/hooks/use-sidebar";
-import styles from "./Sidebar.module.scss";
+import styles from "./sidebar.module.scss";
 import Link from "next/link";
 import { useReadLocalStorage } from "usehooks-ts";
 import { ILocalStorageData } from "@/types";

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useSidebar } from "@/app/hooks/use-sidebar";
-import styles from "./Navbar.module.scss";
+import styles from "./navbar.module.scss";
 import Link from "next/link";
 
 const Navbar: React.FC = () => {
