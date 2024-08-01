@@ -6,7 +6,7 @@ import { Hedvig_Letters_Serif } from "next/font/google";
 import styles from "./page.module.scss";
 import { Divider, Image } from "antd";
 
-export const hedvigLettersSerif = Hedvig_Letters_Serif({
+const hedvigLettersSerif = Hedvig_Letters_Serif({
   subsets: ["latin"],
   display: "swap",
 });
