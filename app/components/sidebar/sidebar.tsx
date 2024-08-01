@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useSidebar } from "@/app/hooks/use-sidebar";
 import styles from "./Sidebar.module.scss";
 import Link from "next/link";
+import { useReadLocalStorage } from "usehooks-ts";
+import { ILocalStorageData } from "@/types";
 
 interface IRecipePath {
   path: string;
@@ -11,35 +13,19 @@ interface IRecipePath {
 
 const Sidebar: React.FC = () => {
   const { isOpen } = useSidebar();
+  const storage = useReadLocalStorage<ILocalStorageData>("culinaryai");
   const [recipePaths, setRecipePaths] = useState<IRecipePath[]>([]);
 
-  const getRecipeKeys = () => {
-    const storedData = localStorage.getItem("culinaryai");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      const newPaths = Object.keys(parsedData.recipes)
-        .reverse()
-        .map((key) => ({
-          path: `/recipe/${key}`,
-          title: parsedData.recipes[key].title,
-        }));
-      setRecipePaths(newPaths);
-    }
-  };
-
   useEffect(() => {
-    getRecipeKeys();
-    const handleStorageChange = (event: StorageEvent) => {
-      console.log("storage change");
-      if (event.key === "culinaryai") {
-        getRecipeKeys();
-      }
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+    const newPaths = Object.keys(storage?.recipes ?? [])
+      .reverse()
+      .map((key) => ({
+        path: `/recipe/${key}`,
+        title: storage?.recipes?.[key]?.title ?? "",
+      }));
+    setRecipePaths(newPaths);
+  }, [storage]);
+
   return (
     <div
       className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}
