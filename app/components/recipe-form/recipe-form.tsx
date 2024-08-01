@@ -4,13 +4,14 @@ import { ILocalStorageData, IRecipe, IRecipes } from "@/types";
 import { useChat } from "ai/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { useForm, Resolver, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, Resolver, Controller } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { Select, Button, Slider, Checkbox, Input } from "antd";
+import { Select, Button, Slider, Checkbox, InputNumber } from "antd";
 import { getNames, registerLocale } from "i18n-iso-countries";
 import countryLocale from "i18n-iso-countries/langs/en.json";
 import TextArea from "antd/es/input/TextArea";
 import styles from "./recipe-form.module.scss";
+import { useLocalStorage } from "usehooks-ts";
 registerLocale(countryLocale);
 
 enum EMealType {
@@ -22,6 +23,7 @@ enum EMealType {
 
 type IFormValues = {
   countries: typeof countryArray;
+  allergies: string;
   additionalDetails: string;
   difficulty: number;
   prepTime: number;
@@ -64,13 +66,18 @@ const resolver: Resolver<IFormValues> = async (values) => {
 };
 
 const RecipeForm: React.FC = () => {
+  const storage = useLocalStorage<ILocalStorageData>("culinaryai", {
+    recipes: {},
+  });
   const { control, handleSubmit, setValue, watch } = useForm<IFormValues>({
     resolver,
     defaultValues: {
       countries: [],
+      allergies: "",
       additionalDetails: "",
       difficulty: 3,
       servings: 2,
+      prepTime: 25,
       breakfast: false,
       brunch: false,
       lunch: true,
@@ -88,14 +95,11 @@ const RecipeForm: React.FC = () => {
       try {
         const responseJson: IRecipe = await response.clone().json();
         const id = uuidv4();
-        let recipes: IRecipes = {};
-        const storedData = localStorage.getItem("culinaryai");
-        if (storedData) {
-          const storageData: ILocalStorageData = JSON.parse(storedData);
-          recipes = storageData?.recipes ?? {};
-        }
-        recipes[id] = responseJson;
-        localStorage.setItem("culinaryai", JSON.stringify({ recipes }));
+        storage[1]((prev) => {
+          const nextObject = { recipes: { ...prev.recipes } };
+          nextObject.recipes[id] = responseJson;
+          return nextObject;
+        });
         router.push(`/recipe/${id}`);
       } catch (error) {
         console.error(error);
@@ -124,14 +128,18 @@ const RecipeForm: React.FC = () => {
         lunch,
         dinner,
         servings,
+        allergies,
       }) => {
         setInput(
           `The recipe must be relevant to the following params:
+        allergies=${allergies}
+        It is critical that the recipe accounts for food allergies otherwise people will die.
+        prepTime=${prepTime} minutes.
+        The recipe must contain the same time limit for cooking as the inputted prepTime.
         additionalDetails=${additionalDetails}.
         countries=${countries?.join(", ")}.
         The difficulty of the recipe is a range between 1 and 10, 1 being the easiest and 10 being the hardest.
         difficulty=${difficulty}.
-        prepTime=${prepTime} minutes.
         The recipe should be breakfast, brunch, lunch, or dinner if their values are true.
         breakfast=${breakfast}.
         brunch=${brunch}.
@@ -147,6 +155,7 @@ const RecipeForm: React.FC = () => {
   return (
     <form className={styles.container} onSubmit={onSubmit}>
       <div className={styles.content}>
+        <h1 className={styles.title}>Discover your next meal</h1>
         <div>
           <label>Select the type of meal</label>
           <div>
@@ -169,15 +178,31 @@ const RecipeForm: React.FC = () => {
           </div>
         </div>
         <div>
-          <label htmlFor="servings">Number of servings</label>
+          <label htmlFor="servings">Serving Size</label>
           <Controller
             name="servings"
             control={control}
             render={({ field }) => (
-              <Input
+              <InputNumber
+                addonAfter="servings"
                 {...field}
                 width={16}
-                placeholder="Any special instructions or additional details for your recipe..."
+                placeholder="Number of servings..."
+              />
+            )}
+          />
+        </div>
+        <div>
+          <label htmlFor="prepTime">Total cooking time</label>
+          <Controller
+            name="prepTime"
+            control={control}
+            render={({ field }) => (
+              <InputNumber
+                {...field}
+                addonAfter="mins"
+                width={16}
+                placeholder="Total cooking time..."
               />
             )}
           />
@@ -229,29 +254,15 @@ const RecipeForm: React.FC = () => {
           )}
         />
         <Controller
-          name="prepTime"
+          name="allergies"
           control={control}
           render={({ field }) => (
             <div>
-              <label htmlFor="prepTime">Total cooking time</label>
-              <Slider
+              <label htmlFor="allergies">Food Allergies</label>
+              <TextArea
                 {...field}
-                marks={{
-                  5: 5,
-                  15: 15,
-                  30: 30,
-                  45: 45,
-                  60: 60,
-                  75: 75,
-                  90: 90,
-                  105: 105,
-                  120: 120,
-                }}
-                min={5}
-                max={120}
-                step={5}
-                defaultValue={30}
-                tooltip={{ formatter: (value) => `${value} min` }}
+                rows={2}
+                placeholder="List your food allergies if any..."
               />
             </div>
           )}
@@ -260,14 +271,18 @@ const RecipeForm: React.FC = () => {
           name="additionalDetails"
           control={control}
           render={({ field }) => (
-            <TextArea
-              {...field}
-              rows={2}
-              placeholder="Any special instructions such as dietary restrictions or additional details for your recipe..."
-            />
+            <div>
+              <label htmlFor="additionalDetails">Additional Details</label>
+              <TextArea
+                {...field}
+                rows={2}
+                placeholder="Any special instructions such as dietary restrictions or additional details for your recipe..."
+              />
+            </div>
           )}
         />
         <Button
+          className={styles.submitBtn}
           disabled={chatEndpointIsLoading}
           loading={chatEndpointIsLoading}
           htmlType="submit"
