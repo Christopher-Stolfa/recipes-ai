@@ -10,6 +10,9 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.37",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "ai": "^3.2.32",
     "antd": "^5.19.3",
     "i18n-iso-countries": "^7.11.3",
