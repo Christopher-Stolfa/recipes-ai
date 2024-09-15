@@ -41,7 +41,7 @@ const Recipe = ({ params: { id } }: IRecipeProps) => {
   return (
     <article className={`${hedvigLettersSerif.className} ${styles.container}`}>
       <section className={styles.header}>
-        <div className={styles.headerLeft}>
+        <div>
           <h1>{recipe?.title}</h1>
           <p className={styles.servingSizeTime}>Servings: {recipe?.servings}</p>
           <p className={styles.servingSizeTime}>
@@ -49,13 +49,13 @@ const Recipe = ({ params: { id } }: IRecipeProps) => {
           </p>
           <p className={styles.description}>{recipe?.description}</p>
         </div>
-        <div className={styles.headerRight}>
+        {/* <div className={styles.headerRight}>
           <Image
             className={styles.image}
             alt={recipe?.title}
             src={recipe?.imageUrl}
           />
-        </div>
+        </div> */}
       </section>
       <section>
         <h2>Ingredients</h2>
