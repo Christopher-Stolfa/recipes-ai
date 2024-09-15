@@ -1,0 +1,22 @@
+.container {
+  .content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .divider {
+    margin-bottom: 1.25rem;
+  }
+  ul {
+    font-size: 0.75rem;
+    li {
+      margin: 0.5rem 1.55rem;
+    }
+  }
+  h3 {
+    text-align: center;
+  }
+  p {
+    font-size: 0.8rem;
+  }
+}
