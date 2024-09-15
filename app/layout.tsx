@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/app/context/sidebar-context";
 import Navbar from "@/app/components/navbar/navbar";
 import MainContent from "@/app/components/main-content/main-content";
 import "./globals.css";
+import { RecipesProvider } from "./context/recipes-context";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,8 +20,10 @@ const RootLayout = ({ children }: IRootLayoutProps) => (
   <html lang="en">
     <body className={inter.className}>
       <SidebarProvider>
-        <Navbar />
-        <MainContent>{children}</MainContent>
+        <RecipesProvider>
+          <Navbar />
+          <MainContent>{children}</MainContent>
+        </RecipesProvider>
       </SidebarProvider>
     </body>
   </html>
