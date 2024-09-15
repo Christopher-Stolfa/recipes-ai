@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSidebar } from "@/app/hooks/use-sidebar";
 import styles from "./sidebar.module.scss";
 import Link from "next/link";
@@ -16,7 +16,7 @@ const Sidebar: React.FC = () => {
   const storage = useReadLocalStorage<ILocalStorageData>("culinaryai");
   const [recipePaths, setRecipePaths] = useState<IRecipePath[]>([]);
 
-  useEffect(() => {
+  const createRecipePaths = useCallback(() => {
     const newPaths = Object.keys(storage?.recipes ?? [])
       .reverse()
       .map((key) => ({
@@ -25,6 +25,8 @@ const Sidebar: React.FC = () => {
       }));
     setRecipePaths(newPaths);
   }, [storage]);
+
+  useEffect(createRecipePaths, [createRecipePaths]);
 
   return (
     <div
