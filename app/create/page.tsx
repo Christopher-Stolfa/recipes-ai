@@ -93,14 +93,13 @@ const Home: React.FC = () => {
     api: GENERATE_RECIPE,
     async onResponse(response) {
       try {
-        const responseJson: IRecipe = await response.clone().json();
-        const id = uuidv4();
+        const newRecipe: IRecipe = await response.clone().json();
         storage[1]((prev) => {
           const nextObject = { recipes: { ...prev.recipes } };
-          nextObject.recipes[id] = responseJson;
+          nextObject.recipes[newRecipe.id] = newRecipe;
           return nextObject;
         });
-        router.push(`/recipe/${id}`);
+        router.push(newRecipe.path);
       } catch (error) {
         console.error(error);
       } finally {
