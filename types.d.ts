@@ -6,6 +6,7 @@ type RecipeStep = {
 };
 
 export interface IRecipe {
+  id: string;
   title: string;
   description: string;
   servings: number;
@@ -15,6 +16,7 @@ export interface IRecipe {
   wordCount: number;
   chatResponse: string;
   imageUrl: string;
+  path: string;
 }
 
 export interface IRecipes {
