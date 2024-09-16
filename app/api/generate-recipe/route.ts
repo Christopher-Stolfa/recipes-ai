@@ -13,9 +13,10 @@ The recipe description should describe the dish and provide a historical fact ab
 The recipe description should be interesting and not sound vague or AI generated.
 Provide a time estimate of the step.
 List the steps in an order that makes sense for the recipe.
-When listing ingredients, please provide the measurements.
+When listing ingredients, provide the measurements and sort the ingredients ascending by importance.
 The amount of ingredients should reflect the number of servings.
 Each step should contain easy to read concise instructions that mentions time and measurements.
+The id should be a UUID and the path should be a string for example: '/recipe/UUID'
 `;
 
 /**
@@ -48,6 +49,12 @@ export async function POST(req: NextRequest) {
      */
     const schema = z
       .object({
+        id: z.string().describe("A UUID"),
+        path: z
+          .string()
+          .describe(
+            "A path using the UUID id of this schema, example: `/recipe/UUID`"
+          ),
         title: z.string().describe("The title of a recipe"),
         description: z.string().describe("A description of the recipe"),
         time: z.number().describe("The total recipe time in minutes"),
