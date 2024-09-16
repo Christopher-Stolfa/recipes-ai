@@ -72,11 +72,7 @@ const Home: React.FC = () => {
       </form>
       <div className={styles.cardGrid}>
         {searchedRecipes?.map((recipe, i) => (
-          <RecipeCard
-            className={styles.card}
-            recipe={recipe}
-            key={`${recipe?.title}-${i}`}
-          />
+          <RecipeCard recipe={recipe} key={`recipe-card-${recipe.id}`} />
         ))}
       </div>
     </div>

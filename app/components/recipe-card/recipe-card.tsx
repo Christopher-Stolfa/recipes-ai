@@ -8,6 +8,8 @@ import {
   faClock,
   faUtensils,
 } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 
 const hedvigLettersSerif = Hedvig_Letters_Serif({
   subsets: ["latin"],
@@ -20,8 +22,17 @@ interface IProps {
 }
 
 const RecipeCard = ({ recipe, className }: IProps) => {
+  const router = useRouter();
+
+  const handleNavigate = useCallback(
+    () => router.push(recipe.path),
+    [router, recipe]
+  );
+
   return (
     <div
+      onClick={handleNavigate}
+      role="link"
       className={`${hedvigLettersSerif.className} ${className} ${styles.container}`}
     >
       <div>

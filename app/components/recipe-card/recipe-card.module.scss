@@ -1,4 +1,14 @@
 .container {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: 0.25rem;
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-0.75px);
+  }
   .content {
     display: flex;
     align-items: center;
