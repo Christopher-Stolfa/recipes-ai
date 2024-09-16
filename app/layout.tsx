@@ -19,12 +19,12 @@ interface IRootLayoutProps {
 const RootLayout = ({ children }: IRootLayoutProps) => (
   <html lang="en">
     <body className={inter.className}>
-      <SidebarProvider>
-        <RecipesProvider>
+      <RecipesProvider>
+        <SidebarProvider>
           <Navbar />
           <MainContent>{children}</MainContent>
-        </RecipesProvider>
-      </SidebarProvider>
+        </SidebarProvider>
+      </RecipesProvider>
     </body>
   </html>
 );

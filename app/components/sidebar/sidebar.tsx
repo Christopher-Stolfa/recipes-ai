@@ -1,32 +1,13 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { useSidebar } from "@/app/hooks/use-sidebar";
 import styles from "./sidebar.module.scss";
 import Link from "next/link";
-import { useReadLocalStorage } from "usehooks-ts";
-import { ILocalStorageData } from "@/types";
-
-interface IRecipePath {
-  path: string;
-  title: string;
-}
+import { RecipesContext } from "@/app/context/recipes-context";
 
 const Sidebar: React.FC = () => {
   const { isOpen } = useSidebar();
-  const storage = useReadLocalStorage<ILocalStorageData>("culinaryai");
-  const [recipePaths, setRecipePaths] = useState<IRecipePath[]>([]);
-
-  const createRecipePaths = useCallback(() => {
-    const newPaths = Object.keys(storage?.recipes ?? [])
-      .reverse()
-      .map((key) => ({
-        path: `/recipe/${key}`,
-        title: storage?.recipes?.[key]?.title ?? "",
-      }));
-    setRecipePaths(newPaths);
-  }, [storage]);
-
-  useEffect(createRecipePaths, [createRecipePaths]);
+  const { recipes } = useContext(RecipesContext);
 
   return (
     <div
@@ -37,9 +18,9 @@ const Sidebar: React.FC = () => {
           <Link href="/">
             <li className={styles.menuItem}>Home</li>
           </Link>
-          {recipePaths?.map((recipePath) => (
-            <Link key={recipePath?.path} href={recipePath?.path}>
-              <li className={styles.menuItem}>{recipePath?.title}</li>
+          {recipes?.map(({ id, path, title }) => (
+            <Link key={id} href={path}>
+              <li className={styles.menuItem}>{title}</li>
             </Link>
           ))}
         </menu>
