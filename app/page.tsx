@@ -4,7 +4,7 @@ import styles from "./page.module.scss";
 import { useForm, Resolver, Controller } from "react-hook-form";
 import { useDebounceCallback, useReadLocalStorage } from "usehooks-ts";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { RecipesContext } from "./context/recipes-context";
+import { RecipesContext } from "./contexts/recipes-context/recipes-context";
 import { IRecipe } from "@/types";
 import RecipeCard from "./components/recipe-card/recipe-card";
 import Link from "next/link";

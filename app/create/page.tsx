@@ -12,27 +12,10 @@ import countryLocale from "i18n-iso-countries/langs/en.json";
 import TextArea from "antd/es/input/TextArea";
 import styles from "./page.module.scss";
 import { useLocalStorage } from "usehooks-ts";
+import useRecipeForm from "../hooks/use-recipe-form/use-recipe-form";
+import { TRecipeFormMealType } from "../contexts/recipe-form-context/types";
+
 registerLocale(countryLocale);
-
-enum EMealType {
-  breakfast = "breakfast",
-  brunch = "brunch",
-  lunch = "lunch",
-  dinner = "dinner",
-}
-
-type IFormValues = {
-  countries: typeof countryArray;
-  allergies: string;
-  additionalDetails: string;
-  difficulty: number;
-  prepTime: number;
-  servings: number;
-  [EMealType.breakfast]: boolean;
-  [EMealType.brunch]: boolean;
-  [EMealType.lunch]: boolean;
-  [EMealType.dinner]: boolean;
-};
 
 const countryList = getNames("en", {
   select: "official",
@@ -44,138 +27,55 @@ const countryArray = Object.keys(countryList).map((isoCode) => ({
   isoCode,
 }));
 
-const mealTypeOptions: { label: string; value: EMealType }[] = [
-  { label: "Breakfast", value: EMealType.breakfast },
-  { label: "Brunch", value: EMealType.brunch },
-  { label: "Lunch", value: EMealType.lunch },
-  { label: "Dinner", value: EMealType.dinner },
+const mealTypeOptions: { label: string; value: TRecipeFormMealType }[] = [
+  { label: "Breakfast", value: "breakfast" },
+  { label: "Brunch", value: "brunch" },
+  { label: "Lunch", value: "lunch" },
+  { label: "Dinner", value: "dinner" },
 ];
 
-const resolver: Resolver<IFormValues> = async (values) => {
-  return {
-    values: values.countries ? values : {},
-    errors: !values.countries
-      ? {
-          countries: {
-            type: "required",
-            message: "This is required.",
-          },
-        }
-      : {},
-  };
-};
-
-const Home: React.FC = () => {
-  const storage = useLocalStorage<ILocalStorageData>("culinaryai", {
-    recipes: {},
-  });
-  const { control, handleSubmit, setValue, watch } = useForm<IFormValues>({
-    resolver,
-    defaultValues: {
-      countries: [],
-      allergies: "",
-      additionalDetails: "",
-      difficulty: 3,
-      servings: 2,
-      prepTime: 25,
-      breakfast: false,
-      brunch: false,
-      lunch: true,
-      dinner: true,
-    },
-  });
-  const router = useRouter();
+const CreateRecipeForm: React.FC = () => {
   const {
-    setInput,
-    handleSubmit: handleApiSubmit,
-    isLoading: chatEndpointIsLoading,
-  } = useChat({
-    api: GENERATE_RECIPE,
-    async onResponse(response) {
-      try {
-        const newRecipe: IRecipe = await response.clone().json();
-        storage[1]((prev) => {
-          const nextObject = { recipes: { ...prev.recipes } };
-          nextObject.recipes[newRecipe.id] = newRecipe;
-          return nextObject;
-        });
-        router.push(newRecipe.path);
-      } catch (error) {
-        console.error(error);
-      } finally {
-      }
-    },
-    streamMode: "text",
-    onError: (e) => {
-      console.error(e.message);
-    },
-  });
-
-  const onSubmit = handleSubmit((formValues) => {
-    handleApiSubmit();
-  });
-
-  useEffect(() => {
-    watch(
-      ({
-        countries,
-        additionalDetails,
-        difficulty,
-        prepTime,
-        breakfast,
-        brunch,
-        lunch,
-        dinner,
-        servings,
-        allergies,
-      }) => {
-        setInput(
-          `The recipe must be relevant to the following params:
-        allergies=${allergies}
-        It is critical that the recipe accounts for food allergies otherwise people will die.
-        prepTime=${prepTime} minutes.
-        The recipe must contain the same time limit for cooking as the inputted prepTime.
-        additionalDetails=${additionalDetails}.
-        countries=${countries?.join(", ")}.
-        The difficulty of the recipe is a range between 1 and 10, 1 being the easiest and 10 being the hardest.
-        difficulty=${difficulty}.
-        The recipe should be breakfast, brunch, lunch, or dinner if their values are true.
-        breakfast=${breakfast}.
-        brunch=${brunch}.
-        lunch=${lunch}.
-        dinner=${dinner}.
-        numberOfServings=${servings}
-        `
-        );
-      }
-    );
-  }, [watch, setInput]);
-
+    onSubmit,
+    chat: { isLoading },
+    form: { control },
+  } = useRecipeForm();
   return (
     <form className={styles.container} onSubmit={onSubmit}>
       <div className={styles.content}>
         <h1 className={styles.title}>Discover your next meal</h1>
-        <div>
-          <label>Select the type of meal</label>
-          <div>
-            {mealTypeOptions.map((option) => (
-              <Controller
-                key={option.value}
-                name={option.value}
-                control={control}
-                render={({ field }) => (
-                  <Checkbox
-                    {...field}
-                    checked={field.value}
-                    onChange={(e) => setValue(option.value, e.target.checked)}
-                  >
-                    {option.label}
-                  </Checkbox>
-                )}
-              />
-            ))}
-          </div>
-        </div>
+        {/* <div className={styles.options}>
+          <Button type="primary" shape="round" size="large">
+            Recipe Name
+          </Button>
+          <Button type="primary" shape="round" size="large">
+            Breakfast
+          </Button>
+          <Button type="primary" shape="round" size="large">
+            Lunch
+          </Button>
+          <Button type="primary" shape="round" size="large">
+            Dinner
+          </Button>
+          <Button type="primary" shape="round" size="large">
+            Serving Size
+          </Button>
+          <Button type="primary" shape="round" size="large">
+            Cooking Time
+          </Button>
+          <Button type="primary" shape="round" size="large">
+            Countries
+          </Button>
+          <Button type="primary" shape="round" size="large">
+            Difficulty
+          </Button>
+          <Button type="primary" shape="round" size="large">
+            Filter Allergies
+          </Button>
+          <Button type="primary" shape="round" size="large">
+            Specific Instructions
+          </Button>
+        </div> */}
         <div>
           <label htmlFor="servings">Serving Size</label>
           <Controller
@@ -214,7 +114,7 @@ const Home: React.FC = () => {
               <label htmlFor="countries">Countries of influence</label>
               <Select
                 {...field}
-                disabled={chatEndpointIsLoading}
+                disabled={isLoading}
                 mode="multiple"
                 allowClear
                 style={{
@@ -282,8 +182,8 @@ const Home: React.FC = () => {
         />
         <Button
           className={styles.submitBtn}
-          disabled={chatEndpointIsLoading}
-          loading={chatEndpointIsLoading}
+          disabled={isLoading}
+          loading={isLoading}
           htmlType="submit"
         >
           Submit
@@ -293,4 +193,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default CreateRecipeForm;

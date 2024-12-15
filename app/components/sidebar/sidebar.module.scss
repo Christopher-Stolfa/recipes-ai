@@ -1,5 +1,4 @@
 .sidebar {
-  width: 0;
   height: calc(100vh - 60px);
   background-color: #6b8a7a;
   color: white;
@@ -10,6 +9,7 @@
   align-items: flex-start;
   overflow: auto;
   letter-spacing: 0;
+  min-width: 250px;
 }
 
 .menuContent {
@@ -36,12 +36,4 @@
   &:hover {
     background-color: #254336;
   }
-}
-
-.open {
-  min-width: 250px;
-}
-
-.closed {
-  width: 0;
 }
