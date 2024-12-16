@@ -10,6 +10,9 @@
 }
 
 .options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .content {

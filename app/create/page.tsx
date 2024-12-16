@@ -14,6 +14,7 @@ import styles from "./page.module.scss";
 import { useLocalStorage } from "usehooks-ts";
 import useRecipeForm from "../hooks/use-recipe-form/use-recipe-form";
 import { TRecipeFormMealType } from "../contexts/recipe-form-context/types";
+import Chip from "../components/chip/chip";
 
 registerLocale(countryLocale);
 
@@ -44,38 +45,18 @@ const CreateRecipeForm: React.FC = () => {
     <form className={styles.container} onSubmit={onSubmit}>
       <div className={styles.content}>
         <h1 className={styles.title}>Discover your next meal</h1>
-        {/* <div className={styles.options}>
-          <Button type="primary" shape="round" size="large">
-            Recipe Name
-          </Button>
-          <Button type="primary" shape="round" size="large">
-            Breakfast
-          </Button>
-          <Button type="primary" shape="round" size="large">
-            Lunch
-          </Button>
-          <Button type="primary" shape="round" size="large">
-            Dinner
-          </Button>
-          <Button type="primary" shape="round" size="large">
-            Serving Size
-          </Button>
-          <Button type="primary" shape="round" size="large">
-            Cooking Time
-          </Button>
-          <Button type="primary" shape="round" size="large">
-            Countries
-          </Button>
-          <Button type="primary" shape="round" size="large">
-            Difficulty
-          </Button>
-          <Button type="primary" shape="round" size="large">
-            Filter Allergies
-          </Button>
-          <Button type="primary" shape="round" size="large">
-            Specific Instructions
-          </Button>
-        </div> */}
+        <div className={styles.options}>
+          <Chip isChecked={false}>Recipe Name</Chip>
+          <Chip isChecked={false}>Breakfast</Chip>
+          <Chip isChecked={false}>Lunch</Chip>
+          <Chip isChecked={false}>Dinner</Chip>
+          <Chip isChecked={false}>Serving Size</Chip>
+          <Chip isChecked={false}>Cooking Time</Chip>
+          <Chip isChecked={false}>Countries</Chip>
+          <Chip isChecked={false}>Difficulty</Chip>
+          <Chip isChecked={false}>Filter Allergies</Chip>
+          <Chip isChecked={false}>Specific Instructions</Chip>
+        </div>
         <div>
           <label htmlFor="servings">Serving Size</label>
           <Controller
