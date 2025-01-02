@@ -2,18 +2,22 @@ import { RecipeFormContext } from "@/app/contexts/recipe-form-context/recipe-for
 import { IRecipeFormValues } from "@/app/contexts/recipe-form-context/types";
 import { useContext, useEffect, useState } from "react";
 
-const initialOptionsShown = {
-  countries: false,
-  additionalDetails: false,
-  difficulty: false,
-  prepTime: false,
-  breakfast: false,
-  brunch: false,
-  lunch: false,
-  dinner: false,
-  servings: false,
-  allergies: false,
-};
+const initialOptionsShown = [
+  { name: "countries", label: "Countries", isChecked: false },
+  {
+    name: "additionalDetails",
+    label: "Specific Instructions",
+    isChecked: false,
+  },
+  { name: "difficulty", label: "Difficulty", isChecked: false },
+  { name: "prepTime", label: "Cooking Time", isChecked: false },
+  { name: "servings", label: "Serving Size", isChecked: false },
+  { name: "allergies", label: "Filter Allergies", isChecked: false },
+  { name: "breakfast", label: "Breakfast", isChecked: false },
+  { name: "brunch", label: "Brunch", isChecked: false },
+  { name: "lunch", label: "Lunch", isChecked: false },
+  { name: "dinner", label: "Dinner", isChecked: false },
+];
 
 const useRecipeForm = () => {
   const context = useContext(RecipeFormContext);
@@ -26,6 +30,16 @@ const useRecipeForm = () => {
   const { form, chat } = context;
   const { handleSubmit, watch } = form;
   const { handleSubmit: handleApiSubmit, setInput } = chat;
+
+  const handleOptionClick = (name: string) => {
+    setOptionsShown((prev) =>
+      prev?.map((option) =>
+        option?.name === name
+          ? { ...option, isChecked: !option?.isChecked }
+          : option
+      )
+    );
+  };
 
   const onSubmit = handleSubmit(() => {
     handleApiSubmit();
@@ -67,7 +81,7 @@ const useRecipeForm = () => {
     );
   }, [watch, setInput]);
 
-  return { form, chat, onSubmit };
+  return { form, chat, onSubmit, optionsShown, handleOptionClick };
 };
 
 export default useRecipeForm;

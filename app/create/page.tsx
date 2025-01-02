@@ -40,22 +40,24 @@ const CreateRecipeForm: React.FC = () => {
     onSubmit,
     chat: { isLoading },
     form: { control },
+    optionsShown,
+    handleOptionClick,
   } = useRecipeForm();
   return (
     <form className={styles.container} onSubmit={onSubmit}>
       <div className={styles.content}>
         <h1 className={styles.title}>Discover your next meal</h1>
         <div className={styles.options}>
-          <Chip isChecked={false}>Recipe Name</Chip>
-          <Chip isChecked={false}>Breakfast</Chip>
-          <Chip isChecked={false}>Lunch</Chip>
-          <Chip isChecked={false}>Dinner</Chip>
-          <Chip isChecked={false}>Serving Size</Chip>
-          <Chip isChecked={false}>Cooking Time</Chip>
-          <Chip isChecked={false}>Countries</Chip>
-          <Chip isChecked={false}>Difficulty</Chip>
-          <Chip isChecked={false}>Filter Allergies</Chip>
-          <Chip isChecked={false}>Specific Instructions</Chip>
+          {/* <Chip isChecked={false}>Recipe Name</Chip> */}
+          {optionsShown?.map(({ isChecked, label, name }) => (
+            <Chip
+              key={label}
+              isChecked={isChecked}
+              onClick={() => handleOptionClick(name)}
+            >
+              {label}
+            </Chip>
+          ))}
         </div>
         <div>
           <label htmlFor="servings">Serving Size</label>
