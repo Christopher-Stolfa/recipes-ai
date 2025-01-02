@@ -1,4 +1,5 @@
-.root {
+.unchecked,
+.checked {
   display: flex;
   flex-direction: row;
   outline: 1px solid black;
@@ -7,4 +8,10 @@
   border-radius: 1rem;
   width: fit-content;
   white-space: nowrap;
+  background-color: transparent;
+  border: none;
+}
+
+.checked {
+  background-color: #d4d4d4;
 }

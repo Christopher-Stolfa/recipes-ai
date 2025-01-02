@@ -5,19 +5,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface IChipProps {
   isChecked: boolean;
+  onClick: () => void;
   icon?: IconDefinition;
 }
 
 const Chip: React.FC<React.PropsWithChildren<IChipProps>> = ({
+  onClick,
   isChecked,
   icon,
   children,
 }) => {
   return (
-    <div className={styles["root"]}>
+    <button
+      onClick={onClick}
+      className={isChecked ? styles["checked"] : styles["unchecked"]}
+    >
       {icon && <FontAwesomeIcon icon={icon} />}
       {children}
-    </div>
+    </button>
   );
 };
 
