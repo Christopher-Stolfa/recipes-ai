@@ -11,6 +11,7 @@ You are a recipe generator that outputs only the best most accurate recipes poss
 The title of the recipe should be accurate and concise. If the recipe has an established name, please use that name and try not to invent new ones.
 The recipe description should describe the dish and provide a historical fact about its origins, all within two sentences.
 The recipe description should be interesting and not sound vague or AI generated.
+The recipe must fall within the prep time limit; if prepTime is 60 minutes, you should not generate a recipe that realistically has a 20 minute prep time.
 Provide a time estimate of the step.
 List the steps in an order that makes sense for the recipe.
 When listing ingredients, provide the measurements and sort the ingredients ascending by importance.
@@ -37,7 +38,7 @@ export async function POST(req: NextRequest) {
      */
     const model = new ChatOpenAI({
       temperature: 0.8,
-      model: "gpt-3.5-turbo-0125",
+      model: "gpt-4o",
       openAIApiKey: process.env.OPENAI_API_KEY,
     });
     const openai = new OpenAI({
@@ -101,7 +102,7 @@ export async function POST(req: NextRequest) {
     });
     // const image = await openai.images.generate({
     //   model: "dall-e-3",
-    //   prompt: `A realistic image of: ${result?.description}`,
+    //   prompt: `A pencil illustration of: ${result?.title}`,
     //   n: 1,
     // });
     // const imageUrl = image?.data?.[0]?.url ?? "";
