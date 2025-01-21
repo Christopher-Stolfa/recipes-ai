@@ -1,17 +1,26 @@
+.root {
+  position: relative;
+  height: 8rem;
+  padding: 48px;
+  overflow: hidden;
+}
 .unchecked,
 .checked {
   display: flex;
   flex-direction: row;
+  align-items: center;
   outline: 1px solid black;
   padding: 0.25rem 0.5rem;
   gap: 0.5rem;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   width: fit-content;
   white-space: nowrap;
   background-color: transparent;
   border: none;
 }
-
+.button-container {
+  width: fit-content;
+}
 .checked {
   background-color: #d4d4d4;
 }
