@@ -14,7 +14,7 @@ import styles from "./page.module.scss";
 import { useLocalStorage } from "usehooks-ts";
 import useRecipeForm from "../hooks/use-recipe-form/use-recipe-form";
 import { TRecipeFormMealType } from "../contexts/recipe-form-context/types";
-import Chip from "../components/chip/chip";
+import RecipeDrawer from "../components/recipe-drawer/recipe-drawer";
 
 registerLocale(countryLocale);
 
@@ -41,128 +41,189 @@ const CreateRecipeForm: React.FC = () => {
     chat: { isLoading },
     form: { control },
     optionsShown,
+    optionsMap,
     handleOptionClick,
   } = useRecipeForm();
+
+  const countryOption = optionsMap?.countries;
+  const additionalDetailsOption = optionsMap?.additionalDetails;
+  const difficultyOption = optionsMap?.difficulty;
+  const preptimeOption = optionsMap?.prepTime;
+  const servingsOption = optionsMap?.servings;
+  const allergiesOption = optionsMap?.allergies;
+
   return (
     <form className={styles.container} onSubmit={onSubmit}>
       <div className={styles.content}>
         <h1 className={styles.title}>Discover your next meal</h1>
         <div className={styles.options}>
-          {/* <Chip isChecked={false}>Recipe Name</Chip> */}
-          {optionsShown?.map(({ isChecked, label, name }) => (
-            <Chip
-              key={label}
-              isChecked={isChecked}
-              onClick={() => handleOptionClick(name)}
+          {countryOption && (
+            <RecipeDrawer
+              icon={countryOption?.icon}
+              key={countryOption?.label}
+              isChecked={countryOption?.isChecked}
+              label={countryOption?.label}
+              onClick={() => handleOptionClick(countryOption?.name)}
             >
-              {label}
-            </Chip>
-          ))}
+              <Controller
+                name="countries"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label htmlFor="countries">Countries of influence</label>
+                    <Select
+                      {...field}
+                      disabled={isLoading}
+                      mode="multiple"
+                      allowClear
+                      style={{
+                        width: "100%",
+                      }}
+                      placeholder="Please select"
+                      options={countryArray}
+                    />
+                  </div>
+                )}
+              />
+            </RecipeDrawer>
+          )}
+          {servingsOption && (
+            <RecipeDrawer
+              icon={servingsOption?.icon}
+              key={servingsOption?.label}
+              isChecked={servingsOption?.isChecked}
+              label={servingsOption?.label}
+              onClick={() => handleOptionClick(servingsOption?.name)}
+            >
+              <div>
+                <label htmlFor="servings">Serving Size</label>
+                <Controller
+                  name="servings"
+                  control={control}
+                  render={({ field }) => (
+                    <InputNumber
+                      addonAfter="servings"
+                      {...field}
+                      width={16}
+                      placeholder="Number of servings..."
+                    />
+                  )}
+                />
+              </div>
+            </RecipeDrawer>
+          )}
+          {preptimeOption && (
+            <RecipeDrawer
+              icon={preptimeOption?.icon}
+              key={preptimeOption?.label}
+              isChecked={preptimeOption?.isChecked}
+              label={preptimeOption?.label}
+              onClick={() => handleOptionClick(preptimeOption?.name)}
+            >
+              <div>
+                <label htmlFor="prepTime">Total cooking time</label>
+                <Controller
+                  name="prepTime"
+                  control={control}
+                  render={({ field }) => (
+                    <InputNumber
+                      {...field}
+                      addonAfter="mins"
+                      width={16}
+                      placeholder="Total cooking time..."
+                    />
+                  )}
+                />
+              </div>
+            </RecipeDrawer>
+          )}
+          {difficultyOption && (
+            <RecipeDrawer
+              icon={difficultyOption?.icon}
+              key={difficultyOption?.label}
+              isChecked={difficultyOption?.isChecked}
+              label={difficultyOption?.label}
+              onClick={() => handleOptionClick(difficultyOption?.name)}
+            >
+              <Controller
+                name="difficulty"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label htmlFor="difficulty">Recipe difficulty</label>
+                    <Slider
+                      {...field}
+                      marks={{
+                        1: 1,
+                        2: 2,
+                        3: 3,
+                        4: 4,
+                        5: 5,
+                        6: 6,
+                        7: 7,
+                        8: 8,
+                        9: 9,
+                        10: 10,
+                      }}
+                      min={1}
+                      max={10}
+                    />
+                  </div>
+                )}
+              />
+            </RecipeDrawer>
+          )}
+          {allergiesOption && (
+            <RecipeDrawer
+              icon={allergiesOption?.icon}
+              key={allergiesOption?.label}
+              isChecked={allergiesOption?.isChecked}
+              label={allergiesOption?.label}
+              onClick={() => handleOptionClick(allergiesOption?.name)}
+            >
+              <Controller
+                name="allergies"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label htmlFor="allergies">Food Allergies</label>
+                    <TextArea
+                      {...field}
+                      rows={2}
+                      placeholder="List your food allergies if any..."
+                    />
+                  </div>
+                )}
+              />
+            </RecipeDrawer>
+          )}
+          {additionalDetailsOption && (
+            <RecipeDrawer
+              icon={additionalDetailsOption?.icon}
+              key={additionalDetailsOption?.label}
+              isChecked={additionalDetailsOption?.isChecked}
+              label={additionalDetailsOption?.label}
+              onClick={() => handleOptionClick(additionalDetailsOption?.name)}
+            >
+              <Controller
+                name="additionalDetails"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label htmlFor="additionalDetails">
+                      Additional Details
+                    </label>
+                    <TextArea
+                      {...field}
+                      rows={2}
+                      placeholder="Any special instructions such as dietary restrictions or additional details for your recipe..."
+                    />
+                  </div>
+                )}
+              />
+            </RecipeDrawer>
+          )}
         </div>
-        <div>
-          <label htmlFor="servings">Serving Size</label>
-          <Controller
-            name="servings"
-            control={control}
-            render={({ field }) => (
-              <InputNumber
-                addonAfter="servings"
-                {...field}
-                width={16}
-                placeholder="Number of servings..."
-              />
-            )}
-          />
-        </div>
-        <div>
-          <label htmlFor="prepTime">Total cooking time</label>
-          <Controller
-            name="prepTime"
-            control={control}
-            render={({ field }) => (
-              <InputNumber
-                {...field}
-                addonAfter="mins"
-                width={16}
-                placeholder="Total cooking time..."
-              />
-            )}
-          />
-        </div>
-        <Controller
-          name="countries"
-          control={control}
-          render={({ field }) => (
-            <div>
-              <label htmlFor="countries">Countries of influence</label>
-              <Select
-                {...field}
-                disabled={isLoading}
-                mode="multiple"
-                allowClear
-                style={{
-                  width: "100%",
-                }}
-                placeholder="Please select"
-                options={countryArray}
-              />
-            </div>
-          )}
-        />
-        <Controller
-          name="difficulty"
-          control={control}
-          render={({ field }) => (
-            <div>
-              <label htmlFor="difficulty">Recipe difficulty</label>
-              <Slider
-                {...field}
-                marks={{
-                  1: 1,
-                  2: 2,
-                  3: 3,
-                  4: 4,
-                  5: 5,
-                  6: 6,
-                  7: 7,
-                  8: 8,
-                  9: 9,
-                  10: 10,
-                }}
-                min={1}
-                max={10}
-              />
-            </div>
-          )}
-        />
-        <Controller
-          name="allergies"
-          control={control}
-          render={({ field }) => (
-            <div>
-              <label htmlFor="allergies">Food Allergies</label>
-              <TextArea
-                {...field}
-                rows={2}
-                placeholder="List your food allergies if any..."
-              />
-            </div>
-          )}
-        />
-        <Controller
-          name="additionalDetails"
-          control={control}
-          render={({ field }) => (
-            <div>
-              <label htmlFor="additionalDetails">Additional Details</label>
-              <TextArea
-                {...field}
-                rows={2}
-                placeholder="Any special instructions such as dietary restrictions or additional details for your recipe..."
-              />
-            </div>
-          )}
-        />
         <Button
           className={styles.submitBtn}
           disabled={isLoading}
