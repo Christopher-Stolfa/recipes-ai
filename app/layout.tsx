@@ -16,13 +16,11 @@ interface IRootLayoutProps {
   children: React.ReactNode;
 }
 
-// TODO: Remove OR repurpose the sidebar navigation. Move options to the top navbar
 const RootLayout = ({ children }: IRootLayoutProps) => (
   <html lang="en">
     <body className={inter.className}>
       <RecipesProvider>
         <RecipeFormProvider>
-          <Navbar />
           <MainContent>{children}</MainContent>
         </RecipeFormProvider>
       </RecipesProvider>
